@@ -1,4 +1,4 @@
-import { useLoaderData, useNavigate, type Params } from "react-router-dom";
+import { useLoaderData, type Params } from "react-router-dom";
 import Post from "../components/Post";
 import TopBar from "../components/TopBar";
 import { useAuthStore } from "../states";
@@ -15,7 +15,7 @@ function UserThread() {
   const { response } = useLoaderData();
   const authStatus = useAuthStore((s) => s.authStatus);
 
-  const posts = response.data.map((post) => (
+  const posts = response.data.map((post: { id: string; content: string; }) => (
     <Post
       key={post.id}
       postId={post.id}

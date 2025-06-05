@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useShallow } from "zustand/shallow";
 
 import TextField from "../components/TextField";
@@ -80,6 +80,12 @@ export default function Register() {
             Register Account
           </BigButton>
         </div>
+        <p>
+          Already have an account?{" "}
+          <Link to="/login" className="underline font-medium">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );

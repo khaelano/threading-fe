@@ -14,7 +14,7 @@ export default function Home() {
   const { response } = useLoaderData();
   const postsData = response.data;
 
-  const posts = postsData.map((post) => (
+  const posts = postsData.map((post: { id: string; content: string; }) => (
     <Post key={post.id} postId={post.id} text={post.content} likeCount={0} />
   ));
 
