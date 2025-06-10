@@ -23,7 +23,7 @@ services:
     user: root
         
   frontend:
-    image: ghcr.io/khaelano/threading-fe:latest
+    image: ghcr.io/khaelano/threading-fe:main
     networks:
       - internal-net
     ports:
