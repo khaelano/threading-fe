@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:latest-jdk17
+FROM jenkins/jenkins:lts
 
 USER root
 
