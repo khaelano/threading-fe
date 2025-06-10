@@ -4,7 +4,7 @@ pipeline {
   environment {
     IMAGE_NAME = "ghcr.io/khaelano/threading-fe"
     IMAGE_TAG = "main"
-    DOCKER_CREDENTIALS_ID = "ghcr-token"
+    DOCKER_CREDENTIALS_ID = "github-token"
   }
 
   stages {
