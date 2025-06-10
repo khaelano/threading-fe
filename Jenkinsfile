@@ -41,7 +41,7 @@ pipeline {
     stage('Redeploy stack') {
       steps {
         sh "docker image rm ghcr.io/khaelano/threading-fe:main || true"
-        sh "docker stack deploy -c docker-compose.yml threading-jenkins"
+        sh "docker stack deploy -c docker-compose.yaml threading-jenkins"
       }
     }
   }
