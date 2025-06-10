@@ -37,6 +37,13 @@ pipeline {
         sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
       }
     }
+    
+    stage('Redeploy stack') {
+      steps {
+        sh "docker image rm ghcr.io/khaelano/threading-fe:main || true"
+        sh "docker stack deploy -c docker-compose.yml threading-jenkins"
+      }
+    }
   }
 
   post {
