@@ -1,41 +1,37 @@
 pipeline {
-    agent any
-    
-    environment {
-        GHCR_REGISTRY = "ghcr.io"
-        GHCR_USERNAME = "khaelano"
-        GHCR_REPO = "threading-fe"
-        GHCR_TAG = "main"
-        DOCKER_IMAGE = "${GHCR_REGISTRY}/${GHCR_USERNAME}/${GHCR_REPO}:${GHCR_TAG}"
+  agent any
+  triggers {
+    githubPush() // Use this if you configure webhook manually
+  }
+  environment {
+    GH_USER = credentials('ghcr-credentials').username
+    GH_TOKEN = credentials('ghcr-credentials').password
+    IMAGE = "ghcr.io/${GH_USER}/threading-fe"
+  }
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
     }
-
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                     url: 'https://github.com/khaelano/threading-fe.git', 
-                     credentialsId: '2f59037e-d768-4781-aa33-a1d449812732'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
-            }
-        }
-
-        stage('Push to GHCR') {
-            steps {
-                withDockerRegistry([credentialsId: "f53ceb0d-433a-4b1a-a70f-819044804db2", url: "https://${GHCR_REGISTRY}"])  {
-                    sh 'docker push $DOCKER_IMAGE'
-                }
-            }
-        }
-
-        stage('Deploy to Docker Swarm') {
-            steps {
-                sh 'docker service update --image $DOCKER_IMAGE jenkins_frontend'
-            }
-        }
+    stage('Build & Push') {
+      steps {
+        sh '''
+          echo "${GH_TOKEN}" | docker login ghcr.io -u "${GH_USER}" --password-stdin
+          docker build -t $IMAGE:$BUILD_NUMBER .
+          docker tag $IMAGE:$BUILD_NUMBER $IMAGE:latest
+          docker push $IMAGE:$BUILD_NUMBER
+          docker push $IMAGE:latest
+        '''
+      }
     }
+    stage('Deploy') {
+      steps {
+        sh '''
+          echo "${GH_TOKEN}" | docker login ghcr.io -u "${GH_USER}" --password-stdin
+          docker stack deploy -c docker-stack.yml threading --with-registry-auth
+        '''
+      }
+    }
+  }
 }

@@ -18,7 +18,7 @@ services:
     privileged: true
         
   frontend:
-    image: ghcr.io/khaelano/threading-fe:main
+    image: ghcr.io/khaelano/threading-fe:latest
     networks:
       - internal-net
     ports:
