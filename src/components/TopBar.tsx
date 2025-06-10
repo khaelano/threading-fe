@@ -43,7 +43,7 @@ function TopBar() {
   const loggedOutButtons = (
     <>
       <Button onClick={navigate_login}>Login</Button>
-      <Button onClick={navigate_register}>Register</Button>
+      <Button onClick={navigate_register}>Register 2</Button>
     </>
   );
 
