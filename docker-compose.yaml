@@ -69,5 +69,5 @@ networks:
 
 volumes:
   pgdata:
-  jenkins_data:
+  jenkins_home:
 
