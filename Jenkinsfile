@@ -9,10 +9,6 @@ pipeline {
         DOCKER_IMAGE = "${GHCR_REGISTRY}/${GHCR_USERNAME}/${GHCR_REPO}:${GHCR_TAG}"
     }
 
-    trigger {
-        githubPush()
-    }
-
     stages {
         stage('Checkout') {
             steps {
