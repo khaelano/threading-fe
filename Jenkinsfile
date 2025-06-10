@@ -1,12 +1,7 @@
 pipeline {
   agent any
-  triggers {
-    githubPush() // Use this if you configure webhook manually
-  }
   environment {
-    GH_USER = credentials('ghcr-credentials').username
-    GH_TOKEN = credentials('ghcr-credentials').password
-    IMAGE = "ghcr.io/${GH_USER}/threading-fe"
+    IMAGE = "ghcr.io/your-github-username/your-site"
   }
   stages {
     stage('Checkout') {
@@ -14,23 +9,27 @@ pipeline {
         checkout scm
       }
     }
-    stage('Build & Push') {
+    stage('Build & Push Image') {
       steps {
-        sh '''
-          echo "${GH_TOKEN}" | docker login ghcr.io -u "${GH_USER}" --password-stdin
-          docker build -t $IMAGE:$BUILD_NUMBER .
-          docker tag $IMAGE:$BUILD_NUMBER $IMAGE:latest
-          docker push $IMAGE:$BUILD_NUMBER
-          docker push $IMAGE:latest
-        '''
+        withCredentials([string(credentialsId: 'ghcr-token', variable: 'GH_TOKEN')]) {
+          sh '''
+            echo "$GH_TOKEN" | docker login ghcr.io -u your-github-username --password-stdin
+            docker build -t $IMAGE:$BUILD_NUMBER .
+            docker tag $IMAGE:$BUILD_NUMBER $IMAGE:latest
+            docker push $IMAGE:$BUILD_NUMBER
+            docker push $IMAGE:latest
+          '''
+        }
       }
     }
-    stage('Deploy') {
+    stage('Deploy to Swarm') {
       steps {
-        sh '''
-          echo "${GH_TOKEN}" | docker login ghcr.io -u "${GH_USER}" --password-stdin
-          docker stack deploy -c docker-stack.yml threading --with-registry-auth
-        '''
+        withCredentials([string(credentialsId: 'ghcr-token', variable: 'GH_TOKEN')]) {
+          sh '''
+            echo "$GH_TOKEN" | docker login ghcr.io -u your-github-username --password-stdin
+            docker stack deploy -c docker-stack.yml your_stack_name --with-registry-auth
+          '''
+        }
       }
     }
   }
