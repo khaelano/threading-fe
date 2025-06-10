@@ -4,10 +4,10 @@ import { useLoaderData, useNavigate, type Params } from "react-router-dom";
 import { useShallow } from "zustand/shallow";
 import { useAuthStore } from "../states";
 
+const API_URL = import.meta.env.VITE_API_HOST;
+
 export async function modifyThreadLoader({ params }: { params: Params }) {
-  const result = await fetch(
-    `http://localhost:8080/threads/${params.threadId}`,
-  );
+  const result = await fetch(`http://${API_URL}/threads/${params.threadId}`);
   const json = await result.json();
 
   return { response: json };
@@ -28,7 +28,7 @@ function ModifyThread() {
   const deletePost = async () => {
     try {
       const result = await fetch(
-        `http://localhost:8080/threads/${response.data.id}`,
+        `http://${API_URL}/threads/${response.data.id}`,
         {
           method: "delete",
           headers: {
@@ -53,7 +53,7 @@ function ModifyThread() {
 
     try {
       const result = await fetch(
-        `http://localhost:8080/threads/${response.data.id}`,
+        `http://${API_URL}/threads/${response.data.id}`,
         {
           method: "put",
           headers: {

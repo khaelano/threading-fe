@@ -1,6 +1,8 @@
 import { jwtDecode } from "jwt-decode";
 import { create } from "zustand";
 
+const API_URL = import.meta.env.VITE_API_HOST;
+
 type RegisterBody = {
   email: string;
   name: string;
@@ -34,7 +36,7 @@ const useAuthStore = create<AuthState>((set) => ({
       password: password,
     };
 
-    const result = await fetch("http://localhost:8080/user/login", {
+    const result = await fetch(`http://${API_URL}/user/login`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -46,9 +48,10 @@ const useAuthStore = create<AuthState>((set) => ({
       set(() => ({ authStatus: "unauthenticated" }));
       return;
     }
-
+    
     const resBody = await result.json();
     const tokenPayload = jwtDecode(resBody.data);
+    sessionStorage.setItem("token bearer", resBody.data);
 
     set(() => ({
       token: resBody.data,
@@ -66,7 +69,7 @@ const useAuthStore = create<AuthState>((set) => ({
       passwordConf: passwordConf,
     };
 
-    const result = await fetch("http://localhost:8080/user/register", {
+    const result = await fetch(`http://${API_URL}/user/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

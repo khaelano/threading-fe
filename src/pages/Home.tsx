@@ -4,8 +4,10 @@ import { useLoaderData } from "react-router-dom";
 import Post from "../components/Post";
 import TopBar from "../components/TopBar";
 
+const API_URL = import.meta.env.VITE_API_HOST;
+
 export async function homeLoader() {
-  const result = await fetch("http://localhost:8080/threads");
+  const result = await fetch(`http://${API_URL}/threads`);
   const json = await result.json();
   return { response: json };
 }
@@ -14,7 +16,7 @@ export default function Home() {
   const { response } = useLoaderData();
   const postsData = response.data;
 
-  const posts = postsData.map((post: { id: string; content: string; }) => (
+  const posts = postsData.map((post: { id: string; content: string }) => (
     <Post key={post.id} postId={post.id} text={post.content} likeCount={0} />
   ));
 

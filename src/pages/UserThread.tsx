@@ -3,9 +3,11 @@ import Post from "../components/Post";
 import TopBar from "../components/TopBar";
 import { useAuthStore } from "../states";
 
+const API_URL = import.meta.env.VITE_API_HOST;
+
 export async function userThreadLoader({ params }: { params: Params }) {
   const result = await fetch(
-    `http://localhost:8080/threads?author=${params.userId}`,
+    `http://${API_URL}/threads?author=${params.userId}`,
   );
   const json = await result.json();
   return { response: json };
@@ -15,7 +17,7 @@ function UserThread() {
   const { response } = useLoaderData();
   const authStatus = useAuthStore((s) => s.authStatus);
 
-  const posts = response.data.map((post: { id: string; content: string; }) => (
+  const posts = response.data.map((post: { id: string; content: string }) => (
     <Post
       key={post.id}
       postId={post.id}

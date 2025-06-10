@@ -1,0 +1,76 @@
+version: "3.8"
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DOCKER_HOST=tcp://docker-proxy:2375
+    networks:
+      - internal-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        
+  frontend:
+    image: ghcr.io/khaelano/threading-fe:main
+    environment:
+      VITE_API_HOST: http://44.201.138.210:8081
+    networks:
+      - internal-net
+    ports:
+     - 80:80
+    depends_on:
+      - backend
+
+  backend:
+    image: ghcr.io/khaelano/threading-be:main
+    networks:
+      - internal-net
+    secrets:
+      - db_url
+      - jwt_secret
+    ports:
+      - 8081:80
+    depends_on:
+      - db
+
+  serverdb:
+    image: postgres:latest
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    networks:
+      - internal-net
+    secrets:
+      - postgres_user
+      - postgres_password
+
+secrets:
+  postgres_user:
+    external: true
+  postgres_password:
+    external: true
+  db_url:
+    external: true
+  jwt_secret:
+    external: true
+
+networks:
+  internal-net:
+    driver: overlay
+
+volumes:
+  pgdata:
+  jenkins_data:
+

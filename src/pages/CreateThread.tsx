@@ -5,6 +5,8 @@ import { useShallow } from "zustand/shallow";
 import Button from "../components/Button";
 import { useAuthStore } from "../states";
 
+const API_URL = import.meta.env.VITE_API_HOST;
+
 function CreateThread() {
   const navigate = useNavigate();
 
@@ -22,7 +24,7 @@ function CreateThread() {
     };
 
     try {
-      const result = await fetch("http://localhost:8080/threads", {
+      const result = await fetch(`http://${API_URL}/threads`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
