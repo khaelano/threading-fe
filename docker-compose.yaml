@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: jenkins/Dockerfile
+    image: jenkins-lts-docker
     ports:
       - "8080:8080"
       - "50000:50000"
