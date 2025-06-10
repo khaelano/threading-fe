@@ -1,5 +1,11 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      // any official docker image with the CLI, DinD portion not strictly needed
+      image 'docker:24.0.5'
+      args  '-v /var/run/docker.sock:/var/run/docker.sock'
+    }
+  }
   environment {
     IMAGE = "ghcr.io/khaelano/threading-fe"
   }
