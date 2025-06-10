@@ -7,14 +7,8 @@ services:
       - "8080:8080"
       - "50000:50000"
     volumes:
-      - jenkins_data:/var/jenkins_home
+      - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
-      - /usr/bin/docker:/usr/bin/docker
-      - /etc/docker/daemon.json:/etc/docker/daemon.json:ro
-
-    environment:
-      - DOCKER_HOST=tcp://docker-proxy:2375
-      - DOCKER_TLS_VERIFY=0
     networks:
       - internal-net
     deploy:
@@ -25,8 +19,6 @@ services:
         
   frontend:
     image: ghcr.io/khaelano/threading-fe:main
-    environment:
-      VITE_API_HOST: http://44.201.138.210:8081
     networks:
       - internal-net
     ports:
