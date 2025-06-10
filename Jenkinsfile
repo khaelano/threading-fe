@@ -1,20 +1,15 @@
 pipeline {
-  agent any
+  agent {
+    docker { image 'node:22.16.0-alpine3.22' }
+  }
   environment {
     IMAGE = "ghcr.io/khaelano/threading-fe"
   }
   stages {
-    stage('Checkout') {
+    stage('Test') {
       steps {
-        checkout scm
+        sh 'node --eval "console.log(process.platform,process.env.CI)"'
       }
-    }
-    stage ('Build Image') {
-        steps {
-            script {
-                dockerImage = docker.build('$IMAGE:$BUILD_NUMBER')
-            }
-        }
     }
   }
 }
