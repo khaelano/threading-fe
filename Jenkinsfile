@@ -9,12 +9,16 @@ pipeline {
         DOCKER_IMAGE = "${GHCR_REGISTRY}/${GHCR_USERNAME}/${GHCR_REPO}:${GHCR_TAG}"
     }
 
+    trigger {
+        githubPush()
+    }
+
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'main',
                      url: 'https://github.com/khaelano/threading-fe.git', 
-                     credentialsId: 'fb540177-949b-4a58-aeaf-1a22cfd5e26c'
+                     credentialsId: '2f59037e-d768-4781-aa33-a1d449812732'
             }
         }
 
@@ -26,7 +30,7 @@ pipeline {
 
         stage('Push to GHCR') {
             steps {
-                withDockerRegistry([credentialsId: "fb540177-949b-4a58-aeaf-1a22cfd5e26c", url: "https://${GHCR_REGISTRY}"])  {
+                withDockerRegistry([credentialsId: "f53ceb0d-433a-4b1a-a70f-819044804db2", url: "https://${GHCR_REGISTRY}"])  {
                     sh 'docker push $DOCKER_IMAGE'
                 }
             }
