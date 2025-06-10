@@ -11,8 +11,10 @@ pipeline {
     stage('Checkout') {
       steps {
         git url: 'https://github.com/khaelano/threading-fe.git', branch: 'main'
+        sh 'pwd && ls -al && git rev-parse --is-inside-work-tree'
       }
     }
+
 
     stage('Build Docker Image') {
       steps {
